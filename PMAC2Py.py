@@ -18,6 +18,8 @@ class PMAC2Py:
         
     def initHeader(self):
         header= """
+from matplotlib import use as mpluse
+mpluse("TkAgg")
 from Laser import *
 import matplotlib.pyplot as plt
 
@@ -78,6 +80,7 @@ p213=0
         footer = """
 
 points_to_plot = L.exportHistory()
+sections_to_plot = [sec.T for sec in points_to_plot if sec[0,3]==1]
 
 
 # Start plotting
@@ -86,22 +89,14 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 import matplotlib.animation as animation
 
-def update_line(num, dataLine, line):
-        # NOTE: there is no .set_data() for 3 dim data...
-    line.set_data(dataLine[0:2, :num])
-    line.set_3d_properties(dataLine[2, :num])
-    return line
-
 # Attaching 3D axis to the figure
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
-# Fifty lines of random 3-D lines
-dat= points_to_plot.T
-
 # Creating line object.
 # NOTE: Can't pass empty arrays into 3d version of plot()
-line = ax.plot(dat[0, 0:1], dat[1, 0:1], dat[2, 0:1])[0]
+for dat in sections_to_plot:
+    line = ax.plot(dat[0, :], dat[1, :], dat[2, :])[0]
 
 # Setting the axes properties
 ax.set_xlim3d([0.0, 1.0])
@@ -115,15 +110,10 @@ ax.set_zlabel('Z')
 
 ax.set_title('3D Test')
 
-# Creating the Animation object
-line_ani = animation.FuncAnimation(fig, update_line, dat.shape[1], fargs=(dat, line),
-                                   interval=500, blit=False)
-ax.set_xlim((0,100))
-ax.set_ylim((0,100))
-ax.set_zlim((0,100))
-
-#fig.show()
-
+ax.set_xlim((0,200))
+ax.set_ylim((0,200))
+ax.set_zlim((0,200))
+plt.show()
         """
         with open(self.pyfile, "a") as f_temp:
             f_temp.write(footer)

@@ -89,6 +89,10 @@ class PMACParser:
         return "L.homing()" 
     def arcrHandler(self,line):
         # X(50) Y(50) R(50)
-        pass
+        mv_commands= re.compile("X|\s[YR]").split(line)
+        x_cmd, y_cmd, r_cmd = mv_commands[1:4]
+        return "L.arcMove({0}, {1}, {2})".format(
+            x_cmd.lower(), y_cmd.lower(), r_cmd.lower()
+        )
 
     
