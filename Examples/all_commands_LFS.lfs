@@ -1,0 +1,41 @@
+Line 10, 35, 20;
+mabs -10, -50, 20;
+mrel 110, 60, -25;
+{fabs }
+{frel }
+{tabs }
+{trel }
+{Circle }
+{arcc }
+{ArcC 25, 30, 20, 5, 0, 1, 1;}
+{arcr }
+{plane }
+{Matruixofpoints}
+{definehome}
+
+{Marker }
+{mrel }
+{goto }
+{Rotateaxis }
+{Speed}
+{Off}
+{On}
+{Power}
+{Blend}
+{NoBlend}
+{Pol }
+{Tempo }
+{Loop }
+{EndLoop}
+{GetPosition}
+{Trench }
+{Cuvet }
+{Rosacea }
+{Sinus }
+{PerpCylinder }
+
+
+
+{ arcr 50,50,50,1;}
+{Label HELLO GLASS;}
+{Plane 25, 300, 0,0,0;}

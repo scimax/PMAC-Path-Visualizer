@@ -1,0 +1,87 @@
+{       //// Galatea Standardized Cantilever Design \\\\        }
+{>>>>>>>>>>>          23 November 2016              <<<<<<<<<<< }
+{>>>>>>>>>> Pieter Vlugter/ EPFL Galatea / STI-IMT  <<<<<<<<<<< }
+{ Summary: New cantilever design for improved frame stiffness   }
+{    by elimination of key beams wihtin the design to provide   }
+{    additional support to opposing sides of the cantilever     }
+{    frame. }
+{ Specifications: Cantilever width: 1000 micron (1 mm)          }
+{                 Cantilever length: 18000 micorn (18 mm)       }
+{                 Inset relief for machining: 250 micron        }
+{                 Horizontal spacing: 3 mm                      }
+{                 Top/Bottom border: 3.5 mm                     }
+{    -> each sample contains 8 cantilevers in 4 sets of two     }
+
+{ Machining parameters:                                         }
+{  -> Target Ed of      ~10 J/mm2                               }
+{  -> Assumed Wnla of   ~2 microns                              }
+{  -> YUZU Laser: 768 kHz, 250 nJ/pulse --> ~190 mW at focus    }
+{  -> Machining velocity: 10 mm/s (10,000 um/s)                 } 
+{  -> NOTE: This LFS is written for OPTICAL depth (index is     }
+{       already included in depth), therefore DO NOT use index  }
+{       compensation when machining!                            }
+{---------------------------------------------------------------}
+{***IMPORTANT***IMPORTANT***IMPORTANT***IMPORTANT***IMPORTANT***}
+{---------------------------------------------------------------}
+{  -> For smooth transitions in the radiused corners, line      }
+{       blending MUST be enabled!                               }
+{  -> Polarizaiton following must also be enabled!              }
+{---------------------------------------------------------------}
+{***IMPORTANT***IMPORTANT***IMPORTANT***IMPORTANT***IMPORTANT***}
+{---------------------------------------------------------------}
+{ Substrate details:                                            }
+{  -> 500 um thick fused silica }
+{  -> optical thickness: 500 / 1.5 -> 333 um (approximately     }
+{  -> machining thickness = 333 + 200 (100 um buffer top/bottom)}
+{  -> 10 um step / 1.5 -> 6 um optical step                     }
+{  -> # of layers = 533 / 6 -> 89 steps                         }
+{ First move: 333+100 -> 433 um (in z to go to depth)           }
+ZCor False;
+PCor False;
+{// set speed }
+speed 10000,10000,1000;
+mrel 5250,3500,-433;
+pol 0;
+repeat 4;
+    {// first cantilever set } 
+    repeat 89; {// default: 73 for 500 um substrate}
+        on;
+            line 250,0,0;
+            line 0,18000,0;
+            line 1000,0,0;
+            line 0,-18000,0;
+            line 1000,0,0;
+            line 0,18000,0;
+            line 250,0,0;
+        off;
+        
+        mrel -250,-5000,0;
+        on;
+            line 250,0,0;
+            line 0,5000,0;
+        off;
+       
+        mrel -1250,-5000,0;
+        on;
+            line -250,0,0;
+            line 0,5000,0;
+        off;
+        
+        mrel -750,-13000,0;
+        on;
+            line -250,0,0;
+            line 0,-5000,0;
+        off;
+        
+        mrel 1250,5000,0;
+        on;
+            line 250,0,0;
+            line 0,-5000,0;
+        off;
+        
+        mrel -1500,0,6;
+    end;
+    mrel 4000,0,-534;
+end;
+mabs 0,0,0;  {// move back to home position}
+off;

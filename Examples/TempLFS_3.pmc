@@ -1,0 +1,26 @@
+; *** Preinitialized variables ***
+I15=1
+Q800=4*ATAN(1)
+; ********** CORE PROGRAM ********** 
+Q162=0
+FRAX(X,Y,Z,C,B);
+F(5000);
+Q801=50
+Q802=10
+Q803=10
+Linear;
+Inc;
+M32==0
+X(0) Y(0) Z(1.000*(Q801-Q802));
+Linear;
+Inc;
+M32==0
+X(Q801) Y(Q802) Z(1.000*(0));
+DWELL2000
+Linear;
+Inc;
+M32==0
+X(0) Y(0) Z(1.000*(-Q802));
+DWELL2000
+HOMEZ1,2,3;
+DWELL5

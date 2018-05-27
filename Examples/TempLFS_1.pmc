@@ -1,0 +1,29 @@
+; ********** Standard Header ******* 
+End Gat;
+Del Gat;
+Close;
+Open Prog 1 Clear;
+Linear;
+Inc;
+%100
+; ********** CORE PROGRAM ******* 
+Q800=0.5
+Q801=2
+Q802=10
+Q802=Q801+ATAN(Q800)
+Q802=Q800+B
+Q800=10
+WHILE (Q800<200)
+Q800=Q801+SIN(Q801)
+Q800=Q800+1
+ENDWHILE
+; ***** Standard end of the program *****
+CMD "&2 #1->+64.000000000X +0.000000000Y +0.000000000Z"
+CMD "&2 #2->+0.000000000X +64.000000000Y +0.000000000Z"
+CMD "&2 #3->+0.000000000X +0.000000000Y +102.400000000Z"
+dwell 100
+CMD "&2PMATCH"
+dwell 100
+M32=0
+SENDS"PROGRAM FINISHED!";
+Close;
