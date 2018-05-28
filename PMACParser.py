@@ -20,6 +20,7 @@ class PMACParser:
             "Circle": self.circleHandler,
             "IF":     self.ifHandler,
             "ELSE":   self.elseHandler,
+            "ENDIF":   self.endIfHandler,
             "HOMEZ":  self.homehandler
         }
     
@@ -59,7 +60,7 @@ class PMACParser:
         # Laser object has to exist already
         mv_commands= re.compile("X|\s[YZB]").split(line)
         x_cmd, y_cmd, z_cmd = mv_commands[1:4]
-        return "L.move({0}, {1}, {2})".format(
+        return "p213=L.move({0}, {1}, {2})[2]".format(
             x_cmd.lower(), y_cmd.lower(), z_cmd.lower()
         )
 
@@ -74,17 +75,36 @@ class PMACParser:
     def circleHandler(self,line):
         return "L.moveStyle=Mode.CIRCLE"
     def incHandler(self,line):
-        return "L.moveRel=True"
+        if line.find("(B)")!=-1:
+            return ""
+        else:
+            return "L.moveRel=True"
     def absHandler(self,line):
         return "L.moveRel=False"
     
     def ifHandler(self,line):
         # if nothing follows after the brackets, look for endif.
         # 
-        return ""
+        s=line.strip()
+        ind_cond_start=s.find("(")
+        ind_cond_end= s.rfind(")")
+        cond=s[ind_cond_start: ind_cond_end+1].replace("=", "==").lower()
+        if ind_cond_end==len(s)-1:
+        #     looplevel
+            self.looplevel= self.looplevel+1
+            return "if "+cond + ": "
+        else:
+            inline_cmd = self.convertLine(s[ind_cond_end+1:].strip())
+            return ("if "+cond + ": " + inline_cmd.strip())
     
     def elseHandler(self,line):
+        # TODO
         return ""
+    
+    def endIfHandler(self,line):
+        self.looplevel= self.looplevel-1
+        return ""
+    
     def homehandler(self,line):
         return "L.homing()" 
     def arcrHandler(self,line):
