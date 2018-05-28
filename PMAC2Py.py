@@ -50,6 +50,18 @@ q161=1
 q301=0
 p213=0
 
+# Tilt
+q120=0
+q121=0
+q122=0
+
+# Platform specific rotation
+q130=0
+q131=0
+q132=0
+
+
+
 # PMAC translation begins
 """
         with open(self.pyfile,"w") as f_temp:
@@ -88,6 +100,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 import matplotlib.animation as animation
+from helper_3d_axes import set_axes_equal
 
 # Attaching 3D axis to the figure
 fig = plt.figure()
@@ -99,20 +112,12 @@ for dat in sections_to_plot:
     line = ax.plot(dat[0, :], dat[1, :], dat[2, :])[0]
 
 # Setting the axes properties
-ax.set_xlim3d([0.0, 1.0])
 ax.set_xlabel('X')
-
-ax.set_ylim3d([0.0, 1.0])
 ax.set_ylabel('Y')
-
-ax.set_zlim3d([0.0, 1.0])
 ax.set_zlabel('Z')
 
 ax.set_title('3D Test')
-
-ax.set_xlim((0,200))
-ax.set_ylim((0,200))
-ax.set_zlim((0,200))
+set_axes_equal(ax)
 plt.show()
         """
         with open(self.pyfile, "a") as f_temp:
