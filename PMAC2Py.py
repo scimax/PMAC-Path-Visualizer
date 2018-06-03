@@ -16,56 +16,9 @@ class PMAC2Py:
         self.processFile()
         self.footer()
         
-    def initHeader(self):
-        header= """
-from matplotlib import use as mpluse
-mpluse("TkAgg")
-from Laser import *
-import matplotlib.pyplot as plt
-
-import math
-from math import exp, sqrt, log as ln
-
-# Math helper functions
-i15=0
-q0=0
-def flagged_trigo(tFunc):
-    return ( lambda x: ( tFunc(x) if i15 else tFunc(math.radians(x)) ))
-def flagged_arctrigo(aFunc):
-    return lambda x: (aFunc(x) if i15 else math.degrees(aFunc(x)) )
-atan2 = lambda y: (math.atan2(y, q0) if i15 else math.degrees(math.atan2(y, q0)) )
-
-cos = flagged_trigo(math.cos)
-sin = flagged_trigo(math.sin)
-tan = flagged_trigo(math.tan)
-acos = flagged_arctrigo(math.acos)
-asin = flagged_arctrigo(math.asin)
-atan = flagged_arctrigo(math.atan)
-
-# Init laser object
-L=Laser()
-
-# Predefined Q variables
-q161=1
-q301=0
-p213=0
-
-# Tilt
-q120=0
-q121=0
-q122=0
-
-# Platform specific rotation
-q130=0
-q131=0
-q132=0
-
-
-
-# PMAC translation begins
-"""
-        with open(self.pyfile,"w") as f_temp:
-            f_temp.write(header)
+    def initHeader(self):        
+        with open("inc/header.py","r") as h, open(self.pyfile,"w") as f_temp:
+            f_temp.write(h.read())
             
     def processFile(self):
         with open(self.pyfile,"a") as f_temp, open(self.filepath, "r") as  pmc_file:
@@ -89,39 +42,8 @@ q132=0
                 print(table_str)
                 
     def footer(self):
-        footer = """
-
-points_to_plot = L.exportHistory()
-sections_to_plot = [sec.T for sec in points_to_plot if sec[0,3]==1]
-
-
-# Start plotting
-import numpy as np
-import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d.axes3d as p3
-import matplotlib.animation as animation
-from helper_3d_axes import set_axes_equal
-
-# Attaching 3D axis to the figure
-fig = plt.figure()
-ax = p3.Axes3D(fig)
-
-# Creating line object.
-# NOTE: Can't pass empty arrays into 3d version of plot()
-for dat in sections_to_plot:
-    line = ax.plot(dat[0, :], dat[1, :], dat[2, :])[0]
-
-# Setting the axes properties
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-
-ax.set_title('3D Test')
-set_axes_equal(ax)
-plt.show()
-        """
-        with open(self.pyfile, "a") as f_temp:
-            f_temp.write(footer)
+        with open("inc/footer.py") as footer, open(self.pyfile, "a") as f_temp:
+            f_temp.write(footer.read())
         
             
             

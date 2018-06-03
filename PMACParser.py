@@ -12,6 +12,7 @@ class PMACParser:
             "ENDWHILE": self.endwhileHandler,
             "X(.+) Y(.+) Z(.+)": self.moveHandler,
             "X(.+) Y(.+) R(.+)": self.arcrHandler,
+#             "G1 X(.+) Y(.+) E(.+)": self.cmd,
             "M32==1": self.laserOnHandler, 
             "M32==0": self.laserOffHandler,
             "Inc":    self.incHandler,
@@ -48,7 +49,8 @@ class PMACParser:
 
     def whileHandler(self,line):
         line= line.strip()
-        res = (re.sub("WHILE\s*\(","while ",line).replace(")",":")).lower()
+        
+        res = (re.sub(r"WHILE\s*\((.+)\)", "while \g<1> :",line)).lower()
         self.looplevel= self.looplevel+1
         return res
 
