@@ -18,7 +18,7 @@ class Laser:
 #         print("Move:",a)
         self.posHistory.append(a)
         self.pos = a
-        return x,y,z
+        return a[0], a[1], a[2]
     
     def arcMove(self, x, y, r):
         # TODO for Pieter

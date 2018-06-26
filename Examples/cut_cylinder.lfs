@@ -1,0 +1,50 @@
+
+@thickness, layer_num, n_layers, num, n_cells, freq_rel, layer_height, radius_rel, defect_rel, lattice_const, radius, length, a, b, angular_resolution, distance_in_layer, i, j, k, padding, num_rods;
+@radius_defect;
+@n_steps_in_layer, n_steps_in_layer, step_with_x;
+@len_bulk_detach, angular_res_bulk;
+@box_height, box_width, box_z_step, box_x_step;
+
+padding:=50;
+
+{ Variables }
+thickness:= 230;
+layer_num:= 4;		{ranges from -4 to 4}
+n_cells:= 4;	{unused up to now}
+n_layers:=9;    {n_layers = n_cells*2 +1}
+num_rods := n_layers-ABS(layer_num);
+freq_rel:= 0.52;  { defect mode frequency in relative units}
+layer_height:= SQRT(3)/2;  {in units of the lattice constant}
+radius_rel:= 0.38; { in units of the lattice constant }
+defect_rel:= 0.97;
+
+lattice_const:= thickness/layer_height;
+radius:= radius_rel*lattice_const;
+radius_defect := defect_rel*lattice_const;
+
+length:= 5000;
+a:= 1;
+b:= 10;
+angular_resolution:= 200;
+
+distance_in_layer:= lattice_const - 2*radius - 2*a;
+n_steps_in_layer:=100;
+step_with_x:= distance_in_layer/n_steps_in_layer;
+
+{Bulk etching variables}
+len_bulk_detach:=5;
+angular_res_bulk:=40;
+
+{Boxes for bulk below and above the cylinders}
+box_height := 56;
+box_width := lattice_const*num_rods;
+box_z_step := 8;
+box_x_step := 1;			
+
+
+
+
+CUTCYLINDER length, radius, a, b, radius_defect, lattice_const, 0, angular_resolution;
+
+mrel 1000, 0, 0;
+Line 0, 0, 500;

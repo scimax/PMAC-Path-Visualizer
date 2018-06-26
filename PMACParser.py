@@ -4,6 +4,7 @@ class PMACParser:
     def __init__(self):
         # The keys are the beginngings of the PMAC expressions
         self.looplevel=0
+        self.decrLoopLevel=False
         self.pmacHandlerMap = {
             "Q" : self.variableHandler,
             "I" : self.variableHandler,
@@ -15,6 +16,7 @@ class PMACParser:
 #             "G1 X(.+) Y(.+) E(.+)": self.cmd,
             "M32==1": self.laserOnHandler, 
             "M32==0": self.laserOffHandler,
+            "M49=":   self.variableHandler,
             "Inc":    self.incHandler,
             "Abs":    self.absHandler,
             "Linear": self.linearHander, 
@@ -24,15 +26,20 @@ class PMACParser:
             "ENDIF":   self.endIfHandler,
             "HOMEZ":  self.homehandler
         }
+        
     
     def convertLine(self, line):
         res=None
         res=""
+        line = line.split(";")[0]
         for key, callback in self.pmacHandlerMap.items():
-            line = line.split(";")[0]
             if re.match(key,line):
                 try:
                     res = self._lStr() + callback(line.strip()) + "\n"
+                    if self.decrLoopLevel:
+                        res=res[4:]
+                        self.decrLoopLevel=False
+                        
                 except TypeError:
                     print("Wrong type returned in line {}.".format(line))
 
@@ -45,6 +52,7 @@ class PMACParser:
     
     # Handler
     def variableHandler(self,line):
+        line=re.sub("M49=(.+)", "m49=int(round(\g<1>))", line)
         return line.lower()
 
     def whileHandler(self,line):
@@ -62,7 +70,7 @@ class PMACParser:
         # Laser object has to exist already
         mv_commands= re.compile("X|\s[YZB]").split(line)
         x_cmd, y_cmd, z_cmd = mv_commands[1:4]
-        return "p213=L.move({0}, {1}, {2})[2]".format(
+        return "p211, p212, p213 = L.move({0}, {1}, {2})".format(
             x_cmd.lower(), y_cmd.lower(), z_cmd.lower()
         )
 
@@ -91,6 +99,8 @@ class PMACParser:
         ind_cond_start=s.find("(")
         ind_cond_end= s.rfind(")")
         cond=s[ind_cond_start: ind_cond_end+1].replace("=", "==").lower()
+        cond=cond.replace("!<", ">=")
+        cond=cond.replace("!>", "<=")
         if ind_cond_end==len(s)-1:
         #     looplevel
             self.looplevel= self.looplevel+1
@@ -100,6 +110,10 @@ class PMACParser:
             return ("if "+cond + ": " + inline_cmd.strip())
     
     def elseHandler(self,line):
+        line=line.strip()
+        if len(line)==4:
+            self.decrLoopLevel = True
+            return line.lower()+":"
         # TODO
         return ""
     

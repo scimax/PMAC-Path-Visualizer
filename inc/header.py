@@ -28,6 +28,8 @@ L=Laser()
 # Predefined Q variables
 q161=1
 q301=0
+p211=0
+p212=0
 p213=0
 
 # Tilt
@@ -40,6 +42,16 @@ q130=0
 q131=0
 q132=0
 
-
+# Rotation matrix
+q140=1
+q141=0
+q142=0
+q143=0
+q144=1
+q145=0
+q146=0
+q147=0
+q148=1
 
 # PMAC translation begins
+
